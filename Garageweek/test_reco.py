@@ -12,8 +12,8 @@ samplerate = 16000
 # File d'attente audio
 q = queue.Queue()
 
-# Ouverture du port série (remplace par le bon port COM ou /dev)
-arduino = serial.Serial('COM5', 9600)  # Exemple : '/dev/ttyUSB0' sur Linux
+# Ouverture du port série
+arduino = serial.Serial('/dev/ttyACM0', 9600)
 
 # Callback d’entrée audio
 def callback(indata, frames, time, status):
