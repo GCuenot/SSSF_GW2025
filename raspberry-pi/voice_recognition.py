@@ -22,6 +22,9 @@ def callback(indata, frames, time, status):
         print(status, file=sys.stderr)
     q.put(bytes(indata))
 
+last_cmd = None
+last_msg = None
+
 # Démarrer l’écoute
 with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                        channels=1, callback=callback):
@@ -40,8 +43,20 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 print("Commande : NEXT")
                 arduino.write(b'next\n')
                 subprocess.run(['espeak', 'Étape suivante'])
+                last_cmd = b'next\n'
+                last_msg = 'Étape suivante'
 
             elif "étape précédente" in texte:
                 print("Commande : PREV")
                 arduino.write(b'prev\n')
                 subprocess.run(['espeak', 'Étape précédente'])
+                last_cmd = b'prev\n'
+                last_msg = 'Étape précédente'
+
+            elif "répète" in texte or "répéter" in texte:
+                if last_cmd and last_msg:
+                    print("Commande : REPEAT")
+                    arduino.write(last_cmd)
+                    subprocess.run(['espeak', last_msg])
+                else:
+                    print("Aucune commande précédente à répéter.")
