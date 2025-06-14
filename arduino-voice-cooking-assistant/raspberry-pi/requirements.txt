@@ -1,0 +1,11 @@
+import vosk
+import sounddevice as sd
+import queue
+import serial
+import json
+
+# Required libraries for the Raspberry Pi application
+sounddevice
+vosk
+pyserial
+espeak-ng

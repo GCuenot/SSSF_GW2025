@@ -4,6 +4,7 @@ import queue
 import vosk
 import sys
 import json
+import subprocess
 
 # Charger le modèle Vosk
 model = vosk.Model("model")  # dossier modèle Vosk
@@ -13,7 +14,7 @@ samplerate = 16000
 q = queue.Queue()
 
 # Ouverture du port série
-arduino = serial.Serial('/dev/ttyACM0', 9600) # Celui de l'arduino : j'ai pas la carte rip
+arduino = serial.Serial('/dev/ttyACM0', 9600)  # Modifier selon le port de l'Arduino
 
 # Callback d’entrée audio
 def callback(indata, frames, time, status):
@@ -38,7 +39,9 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
             if "étape suivante" in texte:
                 print("Commande : NEXT")
                 arduino.write(b'next\n')
+                subprocess.run(['espeak', 'Étape suivante'])
 
             elif "étape précédente" in texte:
                 print("Commande : PREV")
                 arduino.write(b'prev\n')
+                subprocess.run(['espeak', 'Étape précédente'])
