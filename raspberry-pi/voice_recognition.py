@@ -29,7 +29,7 @@ description = recette["description"]
 etapes = recette["etapes"]
 current_index = 0
 
-print(f"Recette selectionnee : {titre}")
+print(f"Recette selectionnée : {titre}")
 print(f"Description : {description}")
 
 def envoyer_etape(index):
@@ -74,7 +74,7 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
         if rec.AcceptWaveform(data):
             result = json.loads(rec.Result())
             texte = result.get("text", "").lower()
-            print("Texte detecte :", texte)
+            print("Texte détecté :", texte)
 
             # Lecture de la liste des recettes
             if "quelles sont les recettes" in texte or "liste des recettes" in texte:
@@ -83,7 +83,7 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 print("Recettes disponibles :", liste)
                 subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', 'Les recettes disponibles sont : ' + liste])
                 continue
-# espeak -v mb-fr1 -s 140 -a 25000 -p 
+
             # Détection de recette dans la phrase
             for r in recettes_data["recettes"]:
                 titre_nettoye = nettoyer_texte(r["titre"])
@@ -94,18 +94,18 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                     etapes = recette["etapes"]
                     current_index = 0
                     print(f"Nouvelle recette : {titre}")
-                    subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', f"Recette {titre} selectionnee"])
+                    subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', f"Recette {titre} sélectionnée"])
                     envoyer_etape(current_index)
                     break
 
             # Navigation classique
-            if is_similar(texte, "etape suivante"):
+            if is_similar(texte, "étape suivante"):
                 current_index = min(current_index + 1, len(etapes) - 1)
                 print("Commande : NEXT")
                 last_cmd = b'next\n'
                 last_msg = envoyer_etape(current_index)
 
-            elif is_similar(texte, "etape precedente"):
+            elif is_similar(texte, "étape précèdente"):
                 current_index = max(current_index - 1, 0)
                 print("Commande : PREV")
                 last_cmd = b'prev\n'
@@ -117,10 +117,10 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 last_cmd = b'start\n'
                 last_msg = envoyer_etape(current_index)
 
-            elif any(is_similar(texte, cmd) for cmd in ["repete", "repeter", "repetition", "recommencer la commande", "recommencer la derniere commande", "recommencer la derniere etape"]):
+            elif any(is_similar(texte, cmd) for cmd in ["répète", "répèter", "répètez","répètition", "recommencer la commande", "recommencer la dernière commande", "recommencer la dernière étape"]):
                 if last_cmd and last_msg:
                     print("Commande : REPEAT")
                     arduino.write((last_msg + '\n').encode())
                     subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', last_msg])
                 else:
-                    print("Aucune commande precedente a repeter.")
+                    print("Aucune commande précédente a répéter.")
