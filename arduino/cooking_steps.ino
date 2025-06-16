@@ -5,11 +5,11 @@ LiquidCrystal_I2C lcd(0x27, 16, 2); // Change to 0x3F if necessary
 
 // Cooking steps
 String cookingSteps[] = {
-  "Step 1: Gather ingredients",
-  "Step 2: Preheat oven",
-  "Step 3: Mix ingredients",
-  "Step 4: Bake for 30 minutes",
-  "Step 5: Let cool before serving"
+  "Etape 1: Rassembler les ingrédients",
+  "Etape 2: Préchauffez le four à 180C",
+  "Etape 3: Mixer les ingrédients",
+  "Etape 4: Cuire au four pendant 30 minutes",
+  "Etape 5: Laisser refroidir et servir"
 };
 int totalSteps = sizeof(cookingSteps) / sizeof(cookingSteps[0]);
 int currentStep = 0;
