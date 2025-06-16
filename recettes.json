@@ -8,7 +8,9 @@
         "Faites fondre le chocolat avec le beurre.",
         "Mélangez les oeufs et le sucre.",
         "Ajoutez la farine puis le mélange chocolat-beurre.",
-        "Versez dans un moule et enfournez 25 minutes."
+        "Versez dans un moule et enfournez 25 minutes.",
+        "La recette est terminée. Bon appétit !"
+
       ]
     },
     {
@@ -19,7 +21,8 @@
         "Faites revenir les lardons dans une poele.",
         "Mélangez les oeufs et le parmesan dans un bol.",
         "Egouttez les pates et ajoutez-les dans la poele.",
-        "Ajoutez le mélange oeufs-fromage hors du feu et remuez."
+        "Ajoutez le mélange oeufs-fromage hors du feu et remuez.",
+        "La recette est terminée. Bon appétit !"
       ]
     },
     {
@@ -30,7 +33,8 @@
         "Emincez les concombres et l'oignon.",
         "Ajoutez le maïs et les olives.",
         "Mélangez avec de la vinaigrette.",
-        "Servez frais avec du pain."
+        "Servez frais avec du pain.",
+        "La recette est terminée. Bon appétit !"
       ]
     },
     {
@@ -41,7 +45,8 @@
         "Ajoutez une tranche de jambon et du fromage.",
         "Refermez le sandwich et beurrez le dessus.",
         "Faites dorer à la poêle ou au four.",
-        "Servez chaud avec une salade verte."
+        "Servez chaud avec une salade verte.",
+        "La recette est terminée. Bon appétit !"
       ]
     },
     {
@@ -52,7 +57,8 @@
         "Ajoutez du curry en poudre et mélangez.",
         "Versez du lait de coco et laissez mijoter.",
         "Ajoutez des légumes si souhaité.",
-        "Servez avec du riz basmati."
+        "Servez avec du riz basmati.",
+        "La recette est terminée. Bon appétit !"
       ]
     },
     {
@@ -63,7 +69,8 @@
         "Frottez un plat à gratin avec de l'ail.",
         "Alternez couches de pommes de terre, crème, sel et poivre.",
         "Ajoutez un peu de lait ou de muscade selon goût.",
-        "Faites cuire au four à 180°C pendant une heure."
+        "Faites cuire au four à 180°C pendant une heure.",
+        "La recette est terminée. Bon appétit !"
       ]
     }
   ]
