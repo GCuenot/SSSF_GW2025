@@ -11,7 +11,7 @@ from threading import Thread
 
 # --- Chargement des recettes ---
 with open("recettes.json", "r") as f:
-    data = json.load(f)
+    recettes_data = json.load(f)
 
 # --- Outils utiles ---
 def nettoyer_texte(txt):
@@ -22,16 +22,8 @@ def nettoyer_texte(txt):
 def is_similar(a, b, threshold=0.7):
     return difflib.SequenceMatcher(None, a, b).ratio() >= threshold
 
-def choisir_recette_depuis_texte(texte_utilisateur):
-    texte_nettoye = nettoyer_texte(texte_utilisateur)
-    for recette in data["recettes"]:
-        titre_nettoye = nettoyer_texte(recette["titre"])
-        if is_similar(texte_nettoye, titre_nettoye):
-            return recette
-    return None
-
 # --- Recette par défaut
-recette = data["recettes"][0]
+recette = recettes_data["recettes"][0]
 titre = recette["titre"]
 description = recette["description"]
 etapes = recette["etapes"]
@@ -84,20 +76,29 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
             texte = result.get("text", "").lower()
             print("Texte detecte :", texte)
 
-            # 🎯 Choix de recette par la voix
-            selection = choisir_recette_depuis_texte(texte)
-            if selection:
-                recette = selection
-                titre = recette["titre"]
-                description = recette["description"]
-                etapes = recette["etapes"]
-                current_index = 0
-                print(f"Nouvelle recette : {titre}")
-                subprocess.run(['espeak', '-v', 'fr-fr', f"Recette {titre} selectionnee"])
-                envoyer_etape(current_index)
+            # Lecture de la liste des recettes
+            if "quelles sont les recettes" in texte or "liste des recettes" in texte:
+                titres = [r["titre"] for r in recettes_data["recettes"]]
+                liste = ", ".join(titres)
+                print("Recettes disponibles :", liste)
+                subprocess.run(['espeak', '-v', 'fr-fr', 'Les recettes disponibles sont : ' + liste])
                 continue
 
-            # 📖 Navigation classique
+            # Détection de recette dans la phrase
+            for r in recettes_data["recettes"]:
+                titre_nettoye = nettoyer_texte(r["titre"])
+                if titre_nettoye in nettoyer_texte(texte):
+                    recette = r
+                    titre = recette["titre"]
+                    description = recette["description"]
+                    etapes = recette["etapes"]
+                    current_index = 0
+                    print(f"Nouvelle recette : {titre}")
+                    subprocess.run(['espeak', '-v', 'fr-fr', f"Recette {titre} selectionnee"])
+                    envoyer_etape(current_index)
+                    break
+
+            # Navigation classique
             if is_similar(texte, "etape suivante"):
                 current_index = min(current_index + 1, len(etapes) - 1)
                 print("Commande : NEXT")
