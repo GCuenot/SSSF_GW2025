@@ -121,6 +121,6 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 if last_cmd and last_msg:
                     print("Commande : REPEAT")
                     arduino.write((last_msg + '\n').encode())
-                    subprocess.run(['espeak', '-v', 'fr-fr', last_msg])
+                    subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', last_msg])
                 else:
                     print("Aucune commande precedente a repeter.")
