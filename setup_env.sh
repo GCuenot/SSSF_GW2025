@@ -8,11 +8,11 @@ echo "Environnement créé dans ./venv"
 echo "Activation de l'environnement..."
 source venv/bin/activate
 
-echo "Installation des dépendances..."
+echo "Installation des dépendances depuis requirements.txt..."
 pip install --upgrade pip
-pip install vosk sounddevice pyserial
+pip install -r raspberry-pi/requirements.txt
 
-echo " Installation terminée."
+echo "Installation terminée."
 
 echo "Pour lancer le programme, exécute :"
 echo "    source venv/bin/activate"
