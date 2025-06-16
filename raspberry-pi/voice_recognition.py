@@ -124,3 +124,4 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                     subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', last_msg])
                 else:
                     print("Aucune commande précédente a répéter.")
+c
