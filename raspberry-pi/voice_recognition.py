@@ -6,39 +6,34 @@ import sys
 import json
 import subprocess
 import difflib
+from threading import Thread
 
 # --- Chargement des recettes ---
 with open("recettes.json", "r") as f:
     data = json.load(f)
 
-def is_similar(a, b, threshold=0.7):
-    return difflib.SequenceMatcher(None, a, b).ratio() >= threshold
-
-# Fonction de sélection d'une recette depuis un texte vocal
-def choisir_recette_depuis_texte(texte_utilisateur):
-    for recette in data["recettes"]:
-        if is_similar(texte_utilisateur, recette["titre"].lower()):
-            return recette
-    return None
-
-# --- Recette par défaut
+# Choisir une recette (la première pour l'instant)
 recette = data["recettes"][0]
 titre = recette["titre"]
 description = recette["description"]
 etapes = recette["etapes"]
-current_index = 0
 
 print(f"Recette selectionnee : {titre}")
 print(f"Description : {description}")
 
-# Envoie une étape à l'arduino + la lit avec espeak
+# --- Outils utiles ---
+def is_similar(a, b, threshold=0.7):
+    return difflib.SequenceMatcher(None, a, b).ratio() >= threshold
+
+current_index = 0
+
 def envoyer_etape(index):
     texte = f"Etape {index + 1}/{len(etapes)}: {etapes[index]}"
     arduino.write((texte + '\n').encode())
     subprocess.run(['espeak', '-v', 'fr-fr', etapes[index]])
     return etapes[index]
 
-# --- Initialisation Vosk, audio, série
+# --- Initialisation ---
 model = vosk.Model("model")
 samplerate = 16000
 q = queue.Queue()
@@ -51,8 +46,8 @@ def callback(indata, frames, time, status):
 
 last_cmd = None
 last_msg = None
-
-# --- Boucle d'écoute principale
+Thread(target=ecoute_arduino, daemon=True).start()
+# --- Boucle d'écoute ---
 with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                        channels=1, callback=callback):
     rec = vosk.KaldiRecognizer(model, samplerate)
@@ -65,22 +60,6 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
             texte = result.get("text", "").lower()
             print("Texte detecte :", texte)
 
-            # 🎯 Détection de choix de recette
-            for r in data["recettes"]:
-                if r["titre"].lower() in texte:
-                    selection = choisir_recette_depuis_texte(r["titre"].lower())
-                    if selection:
-                        recette = selection
-                        titre = recette["titre"]
-                        description = recette["description"]
-                        etapes = recette["etapes"]
-                        current_index = 0
-                        print(f"Nouvelle recette : {titre}")
-                        subprocess.run(['espeak', '-v', 'fr-fr', f"Recette {titre} selectionnee"])
-                        envoyer_etape(current_index)
-                    break
-
-            # Navigation dans la recette
             if is_similar(texte, "etape suivante"):
                 current_index = min(current_index + 1, len(etapes) - 1)
                 print("Commande : NEXT")
@@ -106,3 +85,13 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                     subprocess.run(['espeak', '-v', 'fr-fr', last_msg])
                 else:
                     print("Aucune commande precedente a repeter.")
+
+def ecoute_arduino():
+    global index
+    while True:
+        if arduino.in_waiting:
+            ligne = arduino.readline().decode().strip()
+            print("Arduino a envoyé :", ligne)
+            if ligne == "next":
+                index = min(index + 1, len(etapes) - 1)
+                envoyer_etape(index)
