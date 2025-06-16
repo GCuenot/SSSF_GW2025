@@ -5,23 +5,39 @@ import vosk
 import sys
 import json
 import subprocess
-import difflib  # Pour la comparaison floue
+import difflib
 
-# Fonction de comparaison floue
+# --- Chargement des recettes ---
+with open("recettes.json", "r") as f:
+    data = json.load(f)
+
+# Choisir une recette (la première pour l'instant)
+recette = data["recettes"][0]
+titre = recette["titre"]
+description = recette["description"]
+etapes = recette["etapes"]
+
+print(f"Recette selectionnee : {titre}")
+print(f"Description : {description}")
+
+# --- Outils utiles ---
 def is_similar(a, b, threshold=0.7):
     return difflib.SequenceMatcher(None, a, b).ratio() >= threshold
 
-# Charger le modèle Vosk
-model = vosk.Model("model")  # dossier modèle Vosk
+current_index = 0
+
+def envoyer_etape(index):
+    texte = f"Etape {index + 1}/{len(etapes)}: {etapes[index]}"
+    arduino.write((texte + '\n').encode())
+    subprocess.run(['espeak', '-v', 'fr-fr', etapes[index]])
+    return etapes[index]
+
+# --- Initialisation ---
+model = vosk.Model("model")
 samplerate = 16000
-
-# File d'attente audio
 q = queue.Queue()
+arduino = serial.Serial('/dev/ttyACM0', 9600)
 
-# Ouverture du port série
-arduino = serial.Serial('/dev/ttyACM0', 9600)  # Modifier selon le port de l'Arduino
-
-# Callback d’entrée audio
 def callback(indata, frames, time, status):
     if status:
         print(status, file=sys.stderr)
@@ -30,11 +46,10 @@ def callback(indata, frames, time, status):
 last_cmd = None
 last_msg = None
 
-# Démarrer l’écoute
+# --- Boucle d'écoute ---
 with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                        channels=1, callback=callback):
     rec = vosk.KaldiRecognizer(model, samplerate)
-
     print("Parlez :")
 
     while True:
@@ -42,26 +57,30 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
         if rec.AcceptWaveform(data):
             result = json.loads(rec.Result())
             texte = result.get("text", "").lower()
-            print("Texte détecté :", texte)
+            print("Texte detecte :", texte)
 
-            if is_similar(texte, "étape suivante"):
+            if is_similar(texte, "etape suivante"):
+                current_index = min(current_index + 1, len(etapes) - 1)
                 print("Commande : NEXT")
-                arduino.write(b'next\n')
-                subprocess.run(['espeak', '-v', 'fr-fr', 'Étape suivante'])
                 last_cmd = b'next\n'
-                last_msg = 'Étape suivante'
+                last_msg = envoyer_etape(current_index)
 
-            elif is_similar(texte, "étape précédente"):
+            elif is_similar(texte, "etape precedente"):
+                current_index = max(current_index - 1, 0)
                 print("Commande : PREV")
-                arduino.write(b'prev\n')
-                subprocess.run(['espeak', '-v', 'fr-fr', 'Étape précédente'])
                 last_cmd = b'prev\n'
-                last_msg = 'Étape précédente'
+                last_msg = envoyer_etape(current_index)
 
-            elif any(is_similar(texte, cmd) for cmd in ["répète", "répéter"]):
+            elif is_similar(texte, "recommencer"):
+                current_index = 0
+                print("Commande : RESTART")
+                last_cmd = b'start\n'
+                last_msg = envoyer_etape(current_index)
+
+            elif any(is_similar(texte, cmd) for cmd in ["repete", "repeter"]):
                 if last_cmd and last_msg:
                     print("Commande : REPEAT")
-                    arduino.write(last_cmd)
+                    arduino.write((last_msg + '\n').encode())
                     subprocess.run(['espeak', '-v', 'fr-fr', last_msg])
                 else:
-                    print("Aucune commande précédente à répéter.")
+                    print("Aucune commande precedente a repeter.")

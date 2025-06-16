@@ -1,57 +1,55 @@
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
+#include <LiquidCrystal.h>
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Change to 0x3F if necessary
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 
-// Cooking steps
-String cookingSteps[] = {
-  "Etape 1: Rassembler les ingrédients",
-  "Etape 2: Préchauffez le four à 180C",
-  "Etape 3: Mixer les ingrédients",
-  "Etape 4: Cuire au four pendant 30 minutes",
-  "Etape 5: Laisser refroidir et servir"
-};
-int totalSteps = sizeof(cookingSteps) / sizeof(cookingSteps[0]);
-int currentStep = 0;
-
-// Buffer for serial command
-String command = "";
+String currentText = "";
+unsigned long lastScrollTime = 0;
+int scrollPos = 0;
 
 void setup() {
-  lcd.init();
-  lcd.backlight();
   Serial.begin(9600);
+  lcd.begin(16, 2);
+  lcd.print("Pret");
 }
 
 void loop() {
-  displayStep(cookingSteps[currentStep]);
-  checkSerialCommand();
-}
+  // Lecture série
+  if (Serial.available()) {
+    String ligne = Serial.readStringUntil('\n');
+    ligne.trim();
 
-// Display the current cooking step on the LCD
-void displayStep(String step) {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(step);
-  delay(2000); // Display for 2 seconds
-}
-
-// Check for commands from the Raspberry Pi
-void checkSerialCommand() {
-  while (Serial.available()) {
-    char c = Serial.read();
-    if (c == '\n') {
-      command.trim();
-      if (command == "next") {
-        currentStep = (currentStep + 1) % totalSteps;
-        displayStep(cookingSteps[currentStep]);
-      } else if (command == "prev") {
-        currentStep = (currentStep - 1 + totalSteps) % totalSteps;
-        displayStep(cookingSteps[currentStep]);
-      }
-      command = ""; // Reset command
-    } else {
-      command += c;
+    // Si format "Etape X/Y: texte"
+    if (ligne.startsWith("Etape")) {
+      currentText = ligne;
+      scrollPos = 0;
+      lastScrollTime = millis();
+      afficherEtape();
     }
   }
+
+  // Scroll automatique si texte long
+  if (currentText.length() > 24 && millis() - lastScrollTime > 700) {
+    scrollPos++;
+    if (scrollPos > currentText.length() - 24) scrollPos = 0;
+    afficherEtape();
+    lastScrollTime = millis();
+  }
+}
+
+void afficherEtape() {
+  lcd.clear();
+
+  // Première ligne : "Etape X/Y"
+  int sepIndex = currentText.indexOf(':');
+  String titre = (sepIndex != -1) ? currentText.substring(0, sepIndex) : "Etape ?";
+  lcd.setCursor(0, 0);
+  lcd.print(titre.substring(0, 16));
+
+  // Deuxième ligne : texte défilant
+  String corps = (sepIndex != -1) ? currentText.substring(sepIndex + 1) : "";
+  corps.trim();
+
+  String toDisplay = "                " + corps + "                ";
+  lcd.setCursor(0, 1);
+  lcd.print(toDisplay.substring(scrollPos, scrollPos + 16));
 }

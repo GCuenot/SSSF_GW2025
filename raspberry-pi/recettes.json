@@ -1,0 +1,37 @@
+{
+  "recettes": [
+    {
+      "titre": "Gateau au chocolat",
+      "description": "Un classique moelleux pour le dessert",
+      "etapes": [
+        "Prechauffez le four a 180 degres.",
+        "Faites fondre le chocolat avec le beurre.",
+        "Melangez les oeufs et le sucre.",
+        "Ajoutez la farine puis le melange chocolat-beurre.",
+        "Versez dans un moule et enfournez 25 minutes."
+      ]
+    },
+    {
+      "titre": "Pates a la carbonara",
+      "description": "Recette italienne traditionnelle sans creme",
+      "etapes": [
+        "Faites cuire les pates dans de l'eau bouillante salee.",
+        "Faites revenir les lardons dans une poele.",
+        "Mélangez les oeufs et le parmesan dans un bol.",
+        "Egouttez les pates et ajoutez-les dans la poele.",
+        "Ajoutez le melange oeufs-fromage hors du feu et remuez."
+      ]
+    },
+    {
+      "titre": "Salade composee",
+      "description": "Simple, rapide et fraiche",
+      "etapes": [
+        "Lavez et coupez les tomates.",
+        "Emincez les concombres et l'oignon.",
+        "Ajoutez le mais et les olives.",
+        "Melangez avec de la vinaigrette.",
+        "Servez frais avec du pain."
+      ]
+    }
+  ]
+}
