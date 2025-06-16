@@ -117,7 +117,7 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 last_cmd = b'start\n'
                 last_msg = envoyer_etape(current_index)
 
-            elif any(is_similar(texte, cmd) for cmd in ["repete", "repeter"]):
+            elif any(is_similar(texte, cmd) for cmd in ["repete", "repeter", "repetition", "recommencer la commande", "recommencer la derniere commande", "recommencer la derniere etape"]):
                 if last_cmd and last_msg:
                     print("Commande : REPEAT")
                     arduino.write((last_msg + '\n').encode())
