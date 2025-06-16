@@ -35,7 +35,7 @@ print(f"Description : {description}")
 def envoyer_etape(index):
     texte = f"Etape {index + 1}/{len(etapes)}: {etapes[index]}"
     arduino.write((texte + '\n').encode())
-    subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', etapes[index]])
+    subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', etapes[index]])
     return etapes[index]
 
 def ecoute_arduino():
@@ -81,9 +81,9 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 titres = [r["titre"] for r in recettes_data["recettes"]]
                 liste = ", ".join(titres)
                 print("Recettes disponibles :", liste)
-                subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', 'Les recettes disponibles sont : ' + liste])
+                subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', 'Les recettes disponibles sont : ' + liste])
                 continue
-# espeak -v mb-fr1 -s 140 -a 200 -p 50
+# espeak -v mb-fr1 -s 140 -a 25000 -p 
             # Détection de recette dans la phrase
             for r in recettes_data["recettes"]:
                 titre_nettoye = nettoyer_texte(r["titre"])
@@ -94,7 +94,7 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                     etapes = recette["etapes"]
                     current_index = 0
                     print(f"Nouvelle recette : {titre}")
-                    subprocess.run(['espeak', '-v', 'fr-fr', f"Recette {titre} selectionnee"])
+                    subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50', '-a', '200', f"Recette {titre} selectionnee"])
                     envoyer_etape(current_index)
                     break
 
