@@ -21,6 +21,16 @@ etapes = recette["etapes"]
 print(f"Recette selectionnee : {titre}")
 print(f"Description : {description}")
 
+def ecoute_arduino():
+    global index
+    while True:
+        if arduino.in_waiting:
+            ligne = arduino.readline().decode().strip()
+            print("Arduino a envoyé :", ligne)
+            if ligne == "next":
+                index = min(index + 1, len(etapes) - 1)
+                envoyer_etape(index)
+
 # --- Outils utiles ---
 def is_similar(a, b, threshold=0.7):
     return difflib.SequenceMatcher(None, a, b).ratio() >= threshold
@@ -86,12 +96,3 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 else:
                     print("Aucune commande precedente a repeter.")
 
-def ecoute_arduino():
-    global index
-    while True:
-        if arduino.in_waiting:
-            ligne = arduino.readline().decode().strip()
-            print("Arduino a envoyé :", ligne)
-            if ligne == "next":
-                index = min(index + 1, len(etapes) - 1)
-                envoyer_etape(index)
