@@ -32,6 +32,39 @@
         "Mélangez avec de la vinaigrette.",
         "Servez frais avec du pain."
       ]
+    },
+    {
+      "titre": "Croque-monsieur",
+      "description": "Snack rapide et croustillant",
+      "etapes": [
+        "Beurrez les tranches de pain de mie.",
+        "Ajoutez une tranche de jambon et du fromage.",
+        "Refermez le sandwich et beurrez le dessus.",
+        "Faites dorer à la poêle ou au four.",
+        "Servez chaud avec une salade verte."
+      ]
+    },
+    {
+      "titre": "Poulet curry coco",
+      "description": "Recette exotique douce et parfumée",
+      "etapes": [
+        "Faites revenir des oignons et du poulet coupé en morceaux.",
+        "Ajoutez du curry en poudre et mélangez.",
+        "Versez du lait de coco et laissez mijoter.",
+        "Ajoutez des légumes si souhaité.",
+        "Servez avec du riz basmati."
+      ]
+    },
+    {
+      "titre": "Gratin dauphinois",
+      "description": "Spécialité savoureuse de pommes de terre",
+      "etapes": [
+        "Epluchez et tranchez finement les pommes de terre.",
+        "Frottez un plat à gratin avec de l'ail.",
+        "Alternez couches de pommes de terre, crème, sel et poivre.",
+        "Ajoutez un peu de lait ou de muscade selon goût.",
+        "Faites cuire au four à 180°C pendant une heure."
+      ]
     }
   ]
 }
