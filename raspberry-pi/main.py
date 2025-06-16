@@ -26,13 +26,13 @@ def main():
             if "étape suivante" in command:
                 serial_comm.send_command("next")
                 sleep(1)  # Wait for Arduino to process
-                current_step = serial_comm.receive_step()
+                current_step = serial_comm.read_response()
                 print("Current step:", current_step)
                 subprocess.run(["espeak", current_step])
             elif "étape précédente" in command:
                 serial_comm.send_command("prev")
                 sleep(1)  # Wait for Arduino to process
-                current_step = serial_comm.receive_step()
+                current_step = serial_comm.read_response()
                 print("Current step:", current_step)
                 subprocess.run(["espeak", current_step])
 

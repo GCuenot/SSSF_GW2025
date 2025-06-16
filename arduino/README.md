@@ -1,44 +1,48 @@
-# Arduino Voice Cooking Assistant
+# Arduino Cooking Steps Documentation
 
-This README provides documentation specific to the Arduino part of the project, including setup instructions and usage details.
+This README file provides instructions for the Arduino part of the Cooking Assistant project. It includes details on how to upload the Arduino sketch and connect the necessary hardware.
 
 ## Overview
 
-The Arduino Voice Cooking Assistant project allows users to navigate through cooking steps using voice commands. The Arduino Nano is connected to an LCD display that shows the current cooking step, while the Raspberry Pi handles voice recognition and communicates with the Arduino via USB.
+The `cooking_steps.ino` file contains the Arduino sketch that manages the cooking steps. It initializes an LCD display, defines a series of cooking steps, and handles serial commands from the Raspberry Pi to navigate through these steps.
 
 ## Requirements
 
-- Arduino Nano
+- Arduino Uno R3 or compatible board
 - LCD display (I2C compatible)
-- HC-SR04 ultrasonic sensor (optional for presence detection)
-- USB cable for connection to Raspberry Pi
+- Jumper wires for connections
+- USB cable to connect the Arduino to the Raspberry Pi
 
-## Setup Instructions
+## Uploading the Sketch
 
-1. **Hardware Setup:**
-   - Connect the LCD display to the Arduino Nano using I2C. Typically, this involves connecting the SDA and SCL pins of the LCD to the corresponding pins on the Arduino.
-   - If using an ultrasonic sensor, connect the trig and echo pins to digital pins 8 and 9 on the Arduino.
+1. Open the Arduino IDE on your computer.
+2. Connect your Arduino Uno to your computer using the USB cable.
+3. Open the `cooking_steps.ino` file in the Arduino IDE.
+4. Select the correct board and port from the Tools menu.
+5. Click on the upload button (right arrow icon) to upload the sketch to the Arduino.
 
-2. **Software Installation:**
-   - Install the Arduino IDE on your computer.
-   - Ensure you have the necessary libraries for the LCD display. You can install the `LiquidCrystal_I2C` library via the Library Manager in the Arduino IDE.
+## Wiring the LCD Display
 
-3. **Upload the Sketch:**
-   - Open the `cooking_steps.ino` file in the Arduino IDE.
-   - Select the correct board (Arduino Nano) and port from the Tools menu.
-   - Upload the sketch to the Arduino.
+Connect the LCD display to the Arduino as follows (assuming a common I2C interface):
 
-## Usage
+- VCC to 5V
+- GND to GND
+- SDA to A4 (or the SDA pin on your board)
+- SCL to A5 (or the SCL pin on your board)
 
-- Once the Arduino is powered and the sketch is running, it will display the first cooking step on the LCD.
-- The Raspberry Pi will listen for voice commands. When a command is recognized, it will send the appropriate command to the Arduino to navigate to the next or previous cooking step.
-- The current cooking step will be displayed on the LCD, and the Raspberry Pi will read the step aloud using the `espeak` command.
+## Running the Project
+
+Once the sketch is uploaded and the hardware is connected:
+
+1. Connect the Arduino to the Raspberry Pi via USB.
+2. Ensure that the Raspberry Pi is set up with the necessary Python scripts to communicate with the Arduino.
+3. Run the Raspberry Pi application to start listening for voice commands.
 
 ## Troubleshooting
 
-- Ensure that the Arduino is properly connected to the Raspberry Pi and that the correct serial port is specified in the Raspberry Pi code.
-- If the LCD does not display anything, check the connections and ensure that the correct I2C address is used in the Arduino sketch.
+- If the LCD does not display anything, check the wiring and ensure the correct I2C address is used in the sketch.
+- Make sure the Arduino is properly connected to the Raspberry Pi and that the correct serial port is specified in the Raspberry Pi scripts.
 
-## Contribution
+## Conclusion
 
-Feel free to contribute to this project by submitting issues or pull requests. Your feedback and improvements are welcome!
+This Arduino sketch is a crucial part of the Cooking Assistant project, allowing for interactive cooking steps displayed on an LCD and controlled via voice commands from the Raspberry Pi.

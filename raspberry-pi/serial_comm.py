@@ -1,6 +1,3 @@
-import serial
-import time
-
 class SerialComm:
     def __init__(self, port='/dev/ttyACM0', baudrate=9600):
         self.port = port

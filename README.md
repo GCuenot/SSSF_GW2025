@@ -1,41 +1,39 @@
-# Arduino Voice Cooking Assistant
+# Cooking Assistant Project
 
-This project is designed to facilitate cooking by providing voice recognition capabilities to navigate through cooking steps. It consists of two main components: an Arduino Nano that manages the display of cooking steps on an LCD and a Raspberry Pi that handles voice recognition and communication with the Arduino.
+## Overview
+The Cooking Assistant project is designed to help users follow cooking steps using voice commands. It integrates an Arduino Uno R3 with an LCD display to show the current cooking step and a Raspberry Pi 4B that handles voice recognition and serial communication with the Arduino.
 
-## Project Structure
+## Components
+The project consists of two main components:
 
-- **arduino/**
-  - **cooking_steps.ino**: Arduino sketch for managing the LCD display and serial communication.
-  - **README.md**: Documentation for the Arduino component.
+1. **Arduino Component**:
+   - **cooking_steps.ino**: This Arduino sketch manages the cooking steps, initializes the LCD display, and handles serial commands to navigate through the steps.
 
-- **raspberry-pi/**
-  - **main.py**: Main entry point for the Raspberry Pi application.
-  - **requirements.txt**: Python dependencies for the Raspberry Pi application.
-  - **voice_recognition.py**: Implementation of voice recognition functionality.
-  - **serial_comm.py**: Handles serial communication with the Arduino.
-  - **README.md**: Documentation for the Raspberry Pi component.
-
-- **docs/**
-  - **project_overview.md**: Overview of the project and its components.
+2. **Raspberry Pi Component**:
+   - **main.py**: The main entry point for the Raspberry Pi application. It initializes serial communication and voice recognition, listens for voice commands, and sends commands to the Arduino while providing audio feedback.
+   - **voice_recognition.py**: Handles voice recognition using the Vosk library, capturing audio input and recognizing specific commands related to cooking steps.
+   - **serial_comm.py**: Defines a class `SerialComm` that manages serial communication with the Arduino, including methods to connect, send commands, read responses, and close the connection.
+   - **requirements.txt**: Lists the required Python libraries for the Raspberry Pi application, including `vosk`, `sounddevice`, and `pyserial`.
 
 ## Setup Instructions
 
 ### Arduino Setup
-1. Connect the Arduino Nano to your computer.
-2. Upload the `cooking_steps.ino` sketch to the Arduino using the Arduino IDE.
-3. Ensure the LCD is connected properly to the Arduino.
+1. Connect the Arduino Uno R3 to your computer via USB.
+2. Open the Arduino IDE and load the `cooking_steps.ino` sketch.
+3. Upload the sketch to the Arduino.
+4. Connect an LCD display to the Arduino as specified in the sketch.
 
 ### Raspberry Pi Setup
-1. Install the required Python libraries listed in `requirements.txt` using pip.
-2. Connect the Raspberry Pi to the Arduino via USB.
-3. Run the `main.py` script to start the voice recognition and cooking step navigation.
+1. Ensure your Raspberry Pi is set up with an appropriate operating system.
+2. Install the required Python libraries by running:
+   ```
+   pip install -r requirements.txt
+   ```
+3. Connect the Arduino to the Raspberry Pi via USB.
+4. Run the `main.py` script to start the Cooking Assistant.
 
 ## Usage
-- Use voice commands such as "étape suivante" (next step) and "étape précédente" (previous step) to navigate through the cooking steps.
-- The current step will be displayed on the Arduino's LCD and read aloud using the `espeak` command on the Raspberry Pi.
-
-## Contributing
-Contributions are welcome! Please feel free to submit issues or pull requests for improvements or bug fixes.
+Once everything is set up, you can use voice commands such as "étape suivante" (next step), "étape précédente" (previous step), and "répéter" (repeat) to navigate through the cooking steps. The current step will be displayed on the Arduino's LCD, and the Raspberry Pi will provide audio feedback using the `espeak` command.
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for more details.
+This project is open-source and available for modification and distribution under the MIT License.
