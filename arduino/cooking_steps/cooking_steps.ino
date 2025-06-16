@@ -1,44 +1,59 @@
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
 
-LiquidCrystal_I2C lcd(0x27, 16, 2); // Adresse I2C du LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
-String ligne = "";  // Pour stocker la ligne reçue
+// Capteur HC-SR04
+const int trigPin = 8;
+const int echoPin = 9;
+const int seuil = 25; // cm
+
+unsigned long lastDetection = 0;
+const unsigned long debounceDelay = 500;
 
 void setup() {
   lcd.init();
   lcd.backlight();
   Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
   lcd.setCursor(0, 0);
-  lcd.print("Pret !");
+  lcd.print("Pret...");
 }
 
 void loop() {
+  // 1. Lire les messages du PC
   if (Serial.available()) {
-    char c = Serial.read();
+    String ligne = Serial.readStringUntil('\n');
+    lcd.clear();
 
-    // Fin de message
-    if (c == '\n') {
-      afficherMessage(ligne);
-      ligne = "";
+    if (ligne.length() <= 16) {
+      lcd.setCursor(0, 0);
+      lcd.print(ligne);
     } else {
-      ligne += c;
+      // Scroll rapide sans delay bloquant
+      unsigned long scrollStart = millis();
+      for (int i = 0; i <= ligne.length() - 16; i++) {
+        lcd.setCursor(0, 0);
+        lcd.print(ligne.substring(i, i + 16));
+        while (millis() - scrollStart < 200); // ≈ 200 ms entre scrolls
+        scrollStart = millis();
+      }
     }
   }
-}
 
-void afficherMessage(String msg) {
-  lcd.clear();
-  if (msg.length() <= 16) {
-    lcd.setCursor(0, 0);
-    lcd.print(msg);
-  } else {
-    // Scrolling si trop long
-    for (int i = 0; i <= msg.length() - 16; i++) {
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print(msg.substring(i, i + 16));
-      delay(300);
-    }
+  // 2. Détection avec HC-SR04
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  long duree = pulseIn(echoPin, HIGH, 30000);
+  float distance = duree * 0.034 / 2;
+
+  if (distance > 0 && distance < seuil && millis() - lastDetection > debounceDelay) {
+    Serial.println("next"); // Envoi immédiat
+    lastDetection = millis();
   }
 }
