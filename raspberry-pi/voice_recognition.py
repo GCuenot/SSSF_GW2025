@@ -34,14 +34,14 @@ def envoyer_etape(index):
     return etapes[index]
 
 def ecoute_arduino():
-    global index
+    global current_index
     while True:
         if arduino.in_waiting:
             ligne = arduino.readline().decode().strip()
             print("Arduino a envoyé :", ligne)
             if ligne == "next":
-                index = min(index + 1, len(etapes) - 1)
-                envoyer_etape(index)
+                current_index = min(current_index + 1, len(etapes) - 1)
+                envoyer_etape(current_index)
 
 # --- Initialisation ---
 model = vosk.Model("model")
