@@ -81,9 +81,9 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 titres = [r["titre"] for r in recettes_data["recettes"]]
                 liste = ", ".join(titres)
                 print("Recettes disponibles :", liste)
-                subprocess.run(['espeak', '-v', 'fr-fr', 'Les recettes disponibles sont : ' + liste])
+                subprocess.run(['espeak', '-v', 'mb-fr1', '-s','140', '-p','50',:while 'Les recettes disponibles sont : ' + liste])
                 continue
-
+# espeak -v mb-fr1 -s 140 -a 200 -p 50
             # Détection de recette dans la phrase
             for r in recettes_data["recettes"]:
                 titre_nettoye = nettoyer_texte(r["titre"])

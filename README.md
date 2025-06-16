@@ -37,3 +37,6 @@ Once everything is set up, you can use voice commands such as "étape suivante" 
 
 ## License
 This project is open-source and available for modification and distribution under the MIT License.
+
+faut faire ça btw
+sudo apt install espeak mbrola mbrola-fr1
