@@ -42,14 +42,14 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
             if "étape suivante" in texte:
                 print("Commande : NEXT")
                 arduino.write(b'next\n')
-                subprocess.run(['espeak', 'Étape suivante'])
+                subprocess.run(['espeak', '-v', 'fr-fr', 'Étape suivante'])
                 last_cmd = b'next\n'
                 last_msg = 'Étape suivante'
 
             elif "étape précédente" in texte:
                 print("Commande : PREV")
                 arduino.write(b'prev\n')
-                subprocess.run(['espeak', 'Étape précédente'])
+                subprocess.run(['espeak', '-v', 'fr-fr', 'Étape précédente'])
                 last_cmd = b'prev\n'
                 last_msg = 'Étape précédente'
 
@@ -57,6 +57,6 @@ with sd.RawInputStream(samplerate=samplerate, blocksize=8000, dtype='int16',
                 if last_cmd and last_msg:
                     print("Commande : REPEAT")
                     arduino.write(last_cmd)
-                    subprocess.run(['espeak', last_msg])
+                    subprocess.run(['espeak', '-v', 'fr-fr', last_msg])
                 else:
                     print("Aucune commande précédente à répéter.")
