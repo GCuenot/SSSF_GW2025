@@ -73,9 +73,3 @@ python3 raspberry-pi/main.py
 
 > Le programme lit et affiche chaque étape de la recette.  
 > À la fin, il vous dit `"La recette est terminée. Bon appétit !"`
-
----
-
-## Licence
-
-Ce projet est open-source, distribué sous licence MIT.
