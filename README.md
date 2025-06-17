@@ -1,42 +1,81 @@
-# Cooking Assistant Project
+# Cooking Assistant
 
-## Overview
-The Cooking Assistant project is designed to help users follow cooking steps using voice commands. It integrates an Arduino Uno R3 with an LCD display to show the current cooking step and a Raspberry Pi 4B that handles voice recognition and serial communication with the Arduino.
+Un assistant vocal embarqué pour la cuisine, combinant une **Raspberry Pi 4B**, un **Arduino Uno R3** et un **écran LCD** pour guider pas à pas une recette avec la voix... ou un geste !
 
-## Components
-The project consists of two main components:
+---
 
-1. **Arduino Component**:
-   - **cooking_steps.ino**: This Arduino sketch manages the cooking steps, initializes the LCD display, and handles serial commands to navigate through the steps.
+## Fonctionnalités
 
-2. **Raspberry Pi Component**:
-   - **main.py**: The main entry point for the Raspberry Pi application. It initializes serial communication and voice recognition, listens for voice commands, and sends commands to the Arduino while providing audio feedback.
-   - **voice_recognition.py**: Handles voice recognition using the Vosk library, capturing audio input and recognizing specific commands related to cooking steps.
-   - **serial_comm.py**: Defines a class `SerialComm` that manages serial communication with the Arduino, including methods to connect, send commands, read responses, and close the connection.
-   - **requirements.txt**: Lists the required Python libraries for the Raspberry Pi application, including `vosk`, `sounddevice`, and `pyserial`.
+- Reconnaissance vocale offline avec [Vosk](https://alphacephei.com/vosk/)
+- Synthèse vocale en français avec `espeak`
+- Affichage de l'étape courante sur écran LCD (via Arduino)
+- Sélection vocale de la recette (ex. : "je veux faire un gratin dauphinois")
+- Commandes vocales :
+  - `étape suivante`
+  - `étape précédente`
+  - `répète`
+  - `recommencer`
+  - `quelles sont les recettes`
+- Support du capteur de proximité : geste = étape suivante
+- Recettes en JSON éditables, avec dernière étape automatique ("Bon appétit !")
 
-## Setup Instructions
+---
 
-### Arduino Setup
-1. Connect the Arduino Uno R3 to your computer via USB.
-2. Open the Arduino IDE and load the `cooking_steps.ino` sketch.
-3. Upload the sketch to the Arduino.
-4. Connect an LCD display to the Arduino as specified in the sketch.
+## Composants
 
-### Raspberry Pi Setup
-1. Ensure your Raspberry Pi is set up with an appropriate operating system.
-2. Install the required Python libraries by running:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Connect the Arduino to the Raspberry Pi via USB.
-4. Run the `main.py` script to start the Cooking Assistant.
+### Arduino
+- `cooking_steps.ino` : gère l'écran LCD, reçoit les textes à afficher depuis la Pi
 
-## Usage
-Once everything is set up, you can use voice commands such as "étape suivante" (next step), "étape précédente" (previous step), and "répéter" (repeat) to navigate through the cooking steps. The current step will be displayed on the Arduino's LCD, and the Raspberry Pi will provide audio feedback using the `espeak` command.
+### Raspberry Pi
+- `main.py` : point d'entrée principal
+- `voice_recognition.py` : gestion complète de la voix, des recettes, et des interactions
+- `recettes.json` : toutes les recettes avec étapes
+- `requirements.txt` : dépendances Python (`vosk`, `sounddevice`, `pyserial`)
 
-## License
-This project is open-source and available for modification and distribution under the MIT License.
+---
 
-faut faire ça btw
-sudo apt install espeak mbrola mbrola-fr1
+## Installation
+
+### Pré-requis
+```bash
+sudo apt update
+sudo apt install espeak mbrola mbrola-fr1 python3-pip
+```
+
+### Dépendances Python
+```bash
+python3 -m venv venv
+source venv/bin/activate
+pip install -r raspberry-pi/requirements.txt
+```
+
+### Arduino
+1. Brancher l’Arduino Uno à l'écran LCD (I2C, 4 fils)
+2. Flasher `arduino/cooking_steps/cooking_steps.ino` depuis l’IDE Arduino
+3. Laisser l’Arduino branché à la Raspberry Pi en USB
+
+---
+
+## Utilisation
+
+### Lancer l’assistant :
+```bash
+cd SSSF_GW2025
+source venv/bin/activate
+python3 raspberry-pi/main.py
+```
+
+### Commandes vocales :
+- `"je veux faire un poulet curry coco"`
+- `"étape suivante"`
+- `"répète"`
+- `"quelles sont les recettes"`
+
+> Le programme lit et affiche chaque étape de la recette.  
+> À la fin, il vous dit `"La recette est terminée. Bon appétit !"`
+
+---
+
+## Licence
+
+Ce projet est open-source, distribué sous licence MIT.
